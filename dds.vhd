@@ -7,7 +7,7 @@ use work.coef_table_package.all;
 
 entity dds is
 	port( 	clk : in std_ulogic;						-- 50 MHz Clock des FPGAs
-			f_sel : in std_ulogic_vector(9 downto 0);	-- 10 Bits der Schalter zur Frequenzauswahl
+			f_sel : in integer range 0 to 1023;	-- 10 Bits der Schalter zur Frequenzauswahl
 			pwm_out : out std_ulogic);					-- PWM-Ausgangssignal
 end dds;
 
@@ -42,7 +42,7 @@ phasenakkumulator: process(f_ref)
 begin
 	-- addiert einmal pro Periode von f_ref f_sel zur Phase
 	if rising_edge(f_ref) then
-		phase <= phase + to_integer(signed(f_sel));
+		phase <= phase + f_sel;
 	end if;
 end process phasenakkumulator;
 
