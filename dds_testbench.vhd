@@ -8,7 +8,7 @@ architecture algorithmisch of dds_testbench is
 
 signal T_clk : std_ulogic := '0';
 signal T_pwm_out : std_ulogic := '0';
-signal T_f_sel : integer range 0 to 1023 := 1023;
+signal T_f_sel : integer range 0 to 1023 := 1;
 
 begin
 
@@ -24,7 +24,7 @@ end process clock_gen;
 
 stop_simulation: process
 begin
-	wait for 200 ns;
+	wait for 81920 ns;
 	assert (true = false) report "Simulation beendet." severity failure;
 end process stop_simulation;
 
