@@ -12,7 +12,7 @@ signal T_f_sel : integer range 0 to 1023 := 1;
 
 begin
 
-dut: entity work.dds(algorithmisch) port map(T_clk, T_f_sel, T_pwm_out);
+dut: entity work.dds(rt) port map(T_clk, T_f_sel, T_pwm_out);
 
 clock_gen: process
 begin
@@ -24,7 +24,7 @@ end process clock_gen;
 
 stop_simulation: process
 begin
-	wait for 81920 ns;
+	wait for 819200000 ns;
 	assert (true = false) report "Simulation beendet." severity failure;
 end process stop_simulation;
 
