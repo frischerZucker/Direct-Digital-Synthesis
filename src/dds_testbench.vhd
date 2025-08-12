@@ -12,7 +12,7 @@ signal T_f_sel : integer range 0 to 1023 := 1;
 
 begin
 
-dut: entity work.dds(rt) port map(T_clk, T_f_sel, T_pwm_out);
+dut: entity work.dds(algorithmisch) port map(T_clk, T_f_sel, T_pwm_out);
 
 clock_gen: process
 begin

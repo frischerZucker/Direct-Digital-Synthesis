@@ -11,6 +11,8 @@ entity dds is
 			pwm_out : out std_ulogic);					-- PWM-Ausgangssignal
 end dds;
 
+-- Register-Transfer-Ebense --------------------------------------------------------------------------------
+
 architecture rt of dds is
 
 signal f_ref : std_ulogic;					-- Referenzfrequenz mit 48.828 kHz -> Takt für Phasenakkumulator
@@ -42,6 +44,7 @@ pwm : pwm_generator port map(clk, phase, pwm_out);
 
 end rt;
 
+-- Algorithmische Ebense -----------------------------------------------------------------------------------
 -- TODO: das ist schot RT-Ebene, rising_edge(clk) sollte durch wait 20 ns ersetzt werden, dann müsste es algorithmische Ebene sein.
 architecture algorithmisch of dds is
 
@@ -55,18 +58,18 @@ signal pwm_counter : integer := 0;			-- zählt wie viel Takte in aktueller Period
 
 begin
 -- Generierung der Referenzfrequenz mit 48.828 kHz
-f_ref_generierung: process(clk)
+f_ref_generierung: process
 begin
-	if rising_edge(clk) then
-		-- jeden 1023ten Takt f_ref für einen Takt auf high -> f_ref mit 50 MHz / 1023 = 48.828 kHz
-		if (c = 1023) then
-			c <= 0;
-			f_ref <= '1';
-		else
-			c <= c + 1;
-			f_ref <= '0';
-		end if;
+	-- jeden 1023ten Takt f_ref für einen Takt auf high -> f_ref mit 50 MHz / 1023 = 48.828 kHz
+	if (c = 1023) then
+		c <= 0;
+		f_ref <= '1';
+	else
+		c <= c + 1;
+		f_ref <= '0';
 	end if;
+
+	wait for 20 ns;
 end process f_ref_generierung;
 
 -- Generierung des Phasenwerts
@@ -83,23 +86,23 @@ begin
 end process phasenakkumulator;
 
 -- Generierung des PWM-Signals aus Koeffizienten
-pwm_generierung: process(clk)
+pwm_generierung: process
 begin
-	if rising_edge(clk) then
-		-- neue Periode beginnt wenn f_ref auslöst -> Zähler zurücksetzen
-		if (pwm_counter >= 1023) then
-			pwm_counter <= 0;
-			coef <= coef_table(phase);
-		else
-			pwm_counter <= pwm_counter + 1;
-		end if;
-		-- die ersten coef Takte ist der PWM-Ausgang auf high, danach auf low
-		if (pwm_counter <= coef) then
-			pwm_out <= '1';
-		else
-			pwm_out <= '0';
-		end if;
+	-- neue Periode beginnt wenn f_ref auslöst -> Zähler zurücksetzen
+	if (pwm_counter >= 1023) then
+		pwm_counter <= 0;
+		coef <= coef_table(phase);
+	else
+		pwm_counter <= pwm_counter + 1;
 	end if;
+	-- die ersten coef Takte ist der PWM-Ausgang auf high, danach auf low
+	if (pwm_counter <= coef) then
+		pwm_out <= '1';
+	else
+		pwm_out <= '0';
+	end if;
+
+	wait for 20 ns;
 end process pwm_generierung;
 
 end algorithmisch;
