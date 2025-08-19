@@ -26,7 +26,7 @@ einen Tiefpass in ein Sinussignal umgewandelt werden kann.
     \centering
     \includegraphics[width=.6\linewidth]{img/io.png}
     \caption{verwendete Ein- und Ausgänge des Boards}
-    \label{img_io}
+    \label{img:io}
 \end{figure}
 
 \subsection{Prinzip der Direct-Digital-Synthesis}
@@ -44,11 +44,56 @@ Er bildet gemeinsam mit dem PWM-Generator einen einfachen Analog-Digital-Wandler
     \centering
     \includegraphics[width=\linewidth]{img/blockschaltbild.png}
     \caption{Blockschaltbild eines DDS-Generators}
-    \label{img_blockschaltbild}
+    \label{img:blockschaltbild}
 \end{figure}
 
 \subsection{Lösungsansatz}
+Zur Realisierung des DDS-Signalgenerators habe ich das System in mehrere funktionale Komponentenzerlegt.
+Diese und ihre Beziehungen untereinander sind im Datenflussdiagramm DFD0 (Abbildung \ref{img:dfd0}) dargestellt.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{img/dfd.png}
+    \caption{DFD0}
+    \label{img:dfd0}
+\end{figure}
+
+\noindent Die Generierung der Referenzfrequenz $f_{ref}$ erfolgt über einen Taktteiler, der das Eingangssignal clk durch 1024 teilt.
+Dadurch ergibt sich wie gewünscht die folgende Referenzfrequenz:
+
+\begin{math}
+    f_{ref} = \frac{clk}{1024} = \frac{50 Mhz}{1024} = 48,828 kHz
+\end{math} 
+
+\noindent Der Taktteiler wird als ein 10-bit-Zähler realisiert, der in jedem Takt von clk inkrementiert wird.
+Bei Zählerüberläufen wird ein Impuls erzeugt, der die Referenzfrequenz dargestellt.
+
+\noindent Der Phasenakkumulator wird als 12-bit-Zähler implementiert und arbeitet mit der Referenzfrequenz als Takt.
+Durch die Modulo-$2^{12}$-Operation des Zählers ergibt sich eine Phasenauflösung von 4096 Schritten.
+Die Frequenzauswahl erfolgt über ein 10-bit-Register (f\_sel), das an über die Schalter SW0 bis SW9 gesteuert werden kann.
+Die Ausgangsfrequenz berechnet sich nach folgender Formel:
+
+\begin{math}
+    f_{out} = f_{ref} \cdot \frac{f_\_sel}{2^{12}}
+\end{math}
+
+\noindent Dadurch sind Frequenzen im Bereich von 0 Hz bis 12,195 kHz mit einer Frequenzauflösung von 12 Hz einstellbar. 
+
+\noindent Zur Amplitudenbestimmung wird eine Koeffiziententabelle verwendet, die als ein Array mit 4096 Werten mit jeweils 10 bit vorliegt.
+Dieses wird vorab mithilfe eines Python-Skripts generiert und stellt diskrete Werte einer Sinusfunktion mit 10 bit Amplitudenauflösung dar.
+
+\noindent Der PWM-Generator verwendet die Phase als Index, um den aktuellen Amplitudenwert aus der Koeffiziententabelle auszulesen.
+Ein 10-bit-Zähler zählt die PWM-Ticks, wobei ein Zyklus aus 1024 Ticks, synchron zur Referenzfrequenz, besteht.
+Zum Beginn jedes Zyklus wird ein neuer Koeffizient geladen und der Zähler zurückgesetzt.
+Das Ausgangssignal wird für eine Anzahl von Ticks entsprechend des Koeffizienten auf '1' gesetzt, danach auf '0'.
+
+\noindent Zur Glättung des PWM-Signals wird ein passiver RC-Tiefpass mit Grenzfrequenz $f_g = 16 kHz$ verwendet.
+
+\begin{math}
+    f_g=\frac{1}{2 \cdot \pi \cdot R \cdot C}
+\end{math}
+
+Mit $R=xxx \Omega$ ergibt sich ein Kondensatorwert von $C=xxx F$
 
 \subsection{Testbench und Use-Cases}
 Zur Verifikation der Modelle auf den verschiedenen Ebenen werden zwei Testbenches 
@@ -62,7 +107,7 @@ Simulation beendet und die Signale ausgewertet werden können.
 
 \noindent Mit den Testbenches werden folgende Use-Cases getestet:
 \begin{itemize}
-    \item Sinus mit maximal möglicher Frequenz
-    \item Sinus mit der mittleren möglichen Frequenz
-    \item Sinus mit der minimal möglichen Frequenz
+    \item Sinus mit maximal möglicher Frequenz (12,195 kHz)
+    \item Sinus mit niedriger Frequenz (96 Hz)
+    \item Sinus mit der minimal möglichen Frequenz (0 Hz)
 \end{itemize}
