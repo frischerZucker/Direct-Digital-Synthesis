@@ -29,8 +29,26 @@ einen Tiefpass in ein Sinussignal umgewandelt werden kann.
     \label{img_io}
 \end{figure}
 
+\subsection{Prinzip der Direct-Digital-Synthesis}
+Ein Signalgenerator nach dem Prinzip der Direct-Digital-Synthesis besteht aus mehreren Blöcken.
+Der erste Block ist der \textbf{Phasenakkumulator}. Dieser berechnet in jedem Taktschritt den neuen Phasenwert,
+indem er den Frequenzauswahlwert auf den aktuellen Zählstand addiert.
+Der nächste Teil ist die \textbf{Koeffiziententabelle}. In dieser sind gesampelte Amplitudenwerte der zu 
+generierenden Funktion gespeichert.
+Der \textbf{PWM-Generator} liest mithilfe des vom Phasenakkumulator generierten
+Phasenwerts einen Amplitudenwert aus der Koeffiziententabelle aus und wandelt diesen in ein PWM-Signal um.
+Zum Schluss kommt ein \textbf{Tiefpassfilter}, durch den das PWM-Signal in das analoge Signal umgewandelt wird.
+Er bildet gemeinsam mit dem PWM-Generator einen einfachen Analog-Digital-Wandler.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{img/blockschaltbild.png}
+    \caption{Blockschaltbild eines DDS-Generators}
+    \label{img_blockschaltbild}
+\end{figure}
+
 \subsection{Lösungsansatz}
-falhajkghkjal
+
 
 \subsection{Testbench und Use-Cases}
 Zur Verifikation der Modelle auf den verschiedenen Ebenen werden zwei Testbenches 
