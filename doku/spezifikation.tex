@@ -59,13 +59,8 @@ Diese und ihre Beziehungen untereinander sind im Datenflussdiagramm DFD0 (Abbild
 \end{figure}
 
 \noindent Die Generierung der Referenzfrequenz $f_{ref}$ erfolgt über einen Taktteiler, der das Eingangssignal clk durch 1024 teilt.
-Dadurch ergibt sich wie gewünscht die folgende Referenzfrequenz:
-
-\begin{math}
-    f_{ref} = \frac{clk}{1024} = \frac{50 Mhz}{1024} = 48,828 kHz
-\end{math} 
-
-\noindent Der Taktteiler wird als ein 10-bit-Zähler realisiert, der in jedem Takt von clk inkrementiert wird.
+Dadurch ergibt sich die gewünschte Referenzfrequenz von 48,828 kHz.
+Der Taktteiler wird als ein 10-bit-Zähler realisiert, der in jedem Takt von clk inkrementiert wird.
 Bei Zählerüberläufen wird ein Impuls erzeugt, der die Referenzfrequenz dargestellt.
 
 \noindent Der Phasenakkumulator wird als 12-bit-Zähler implementiert und arbeitet mit der Referenzfrequenz als Takt.
@@ -95,19 +90,12 @@ Das Ausgangssignal wird für eine Anzahl von Ticks entsprechend des Koeffiziente
 
 Mit $R=xxx \Omega$ ergibt sich ein Kondensatorwert von $C=xxx F$
 
-\subsection{Testbench und Use-Cases}
+\subsection{Testbenches und Use-Cases}
 Zur Verifikation der Modelle auf den verschiedenen Ebenen werden zwei Testbenches 
-benötigt. Eine für das Modell auf algorithmischer Ebene und eine für die Register-Transfer-Ebene.
-Die Testbench auf algorithmischer Ebene erzeugt eine Instanz des Signalgenerators und
-wartet eine gewisse Zeit bevor sie sich beendet. Anschließend kann der Verlauf der
-Signale ausgewertet werden.
-Die Testbench auf Register-Transfer-Ebene beinhaltet zusätzlich noch einen Prozess
-zur Generierung des clk-Signals. Auch hier wird eine gewisse Zeit gewartet, bis sich die
-Simulation beendet und die Signale ausgewertet werden können.
-
-\noindent Mit den Testbenches werden folgende Use-Cases getestet:
-\begin{itemize}
-    \item Sinus mit maximal möglicher Frequenz (12,195 kHz)
-    \item Sinus mit niedriger Frequenz (96 Hz)
-    \item Sinus mit der minimal möglichen Frequenz (0 Hz)
-\end{itemize}
+benötigt.
+Eine für das Modell auf algorithmischer Ebene und eine für die Register-Transfer-Ebene.
+Beide Testbenches durchlaufen jeweils drei Use-Cases.
+Der erste Use-Case ist die Generierung eines Signals mit maximal möglicher Frequenz (f\_sel = 1023).
+Als zweites wird ein Signal mit der mittleren möglichen Frequenz generiert (f\_sel = 512).
+Zum Schluss wird als dritter Use-Case ein Signal mit der geringsten einstellbaren Frequenz erzeugt (f\_sel = 1).
+Diese entspreden 12,195 kHz, 6,1035 kHz und 11,92 Hz.
