@@ -15,7 +15,6 @@ end phasenakkumulator;
 architecture rt of phasenakkumulator is
 
 begin
-
 -- Generierung des Phasenwerts
 process(f_ref)
 begin

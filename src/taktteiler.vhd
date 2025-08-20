@@ -11,14 +11,17 @@ entity taktteiler is
 end taktteiler;
 
 architecture rt of taktteiler is
-signal c: integer range 0 to 1023 := 0;
+-- Der Taktteiler funk
+
+signal c: integer range 0 to 1023 := 0;	-- Zählstand
+
 begin
 
 -- Generierung der Referenzfrequenz mit 48.828 kHz
 f_ref_generierung: process(clk)
 begin
 	if rising_edge(clk) then
-		-- jeden 1023ten Takt f_ref für einen Takt auf high -> f_ref mit 50 MHz / 1023 = 48.828 kHz
+		-- jeden 1023ten Takt f_ref für einen Takt auf high setzen -> f_ref mit 50 MHz / 1023 = 48.828 kHz
 		if (c = 1023) then
 			c <= 0;
 			f_ref <= '1';

@@ -8,7 +8,7 @@ architecture algorithmisch of dds_testbench is
 
 signal T_clk : std_ulogic := '0';
 signal T_pwm_out : std_ulogic := '0';
-signal T_f_sel : integer range 0 to 1023 := 1;
+signal T_f_sel : integer range 0 to 1023 := 1023;
 
 begin
 
