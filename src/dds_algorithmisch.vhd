@@ -13,7 +13,7 @@ begin
 -- Generierung der Referenzfrequenz mit 48.828 kHz
 f_ref_generierung: process
 begin
-	-- jeden 1023ten Takt f_ref f�r einen Takt auf high -> f_ref mit 50 MHz / 1023 = 48.828 kHz
+	-- jeden 1023ten Takt f_ref für einen Takt auf high -> f_ref mit 50 MHz / 1023 = 48.828 kHz
 	if (c = 1023) then
 		c <= 0;
 		f_ref <= '1';
@@ -41,7 +41,7 @@ end process phasenakkumulator;
 -- Generierung des PWM-Signals aus Koeffizienten
 pwm_generierung: process
 begin
-	-- neue Periode beginnt wenn f_ref ausl�st -> Z�hler zur�cksetzen
+	-- neue Periode beginnt wenn f_ref auslöst -> Zähler zurücksetzen
 	if (pwm_counter >= 1023) then
 		pwm_counter <= 0;
 		coef <= coef_table(phase);
