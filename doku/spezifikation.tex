@@ -1,5 +1,7 @@
 \section{Spezifikation des Systems}
+\label{sec:spezifikation}
 \subsection{Aufgabe}
+\label{subsec:aufgabe}
 Ziel des Projektes ist die Entwicklung eines Signalgenerators nach dem Prinzip der 
 Direct-Digital-Synthesis, der in der Lage ist, ein Sinussignal mit variabler 
 Frequenz zu generieren. Die Auswahl der Frequenz erfolgt über die sich auf dem Board
@@ -13,6 +15,7 @@ befindenden Taste Das System soll dabei folgende Eigenschaften aufweisen:
 \end{itemize} 
 
 \subsection{Ein- und Ausgänge des Systems}
+\label{subsec:system_io}
 Das System benötigt nicht sonderlich viele Ein- und Ausgänge.
 Als Eingänge werden Taster zur Auswahl der Frequenz benötigt. Da das
 Frequenzkontrollregister eine Auflösung von 10 bit hat, bietet es sich an, zehn der
@@ -26,10 +29,11 @@ einen Tiefpass in ein Sinussignal umgewandelt werden kann.
     \centering
     \includegraphics[width=.6\linewidth]{img/io.png}
     \caption{verwendete Ein- und Ausgänge des Boards}
-    \label{img:io}
+    \label{fig:io}
 \end{figure}
 
 \subsection{Prinzip der Direct-Digital-Synthesis}
+\label{subsec:prinzip}
 Ein Signalgenerator nach dem Prinzip der Direct-Digital-Synthesis besteht aus mehreren Blöcken.
 Der erste Block ist der \textbf{Phasenakkumulator}. Dieser berechnet in jedem Taktschritt den neuen Phasenwert,
 indem er den Frequenzauswahlwert auf den aktuellen Zählstand addiert.
@@ -44,18 +48,19 @@ Er bildet gemeinsam mit dem PWM-Generator einen einfachen Analog-Digital-Wandler
     \centering
     \includegraphics[width=\linewidth]{img/blockschaltbild.png}
     \caption{Blockschaltbild eines DDS-Generators}
-    \label{img:blockschaltbild}
+    \label{fig:blockschaltbild}
 \end{figure}
 
 \subsection{Lösungsansatz}
+\label{subsec:lösungsansatz}
 Zur Realisierung des DDS-Signalgenerators habe ich das System in mehrere funktionale Komponentenzerlegt.
-Diese und ihre Beziehungen untereinander sind im Datenflussdiagramm DFD0 (Abbildung \ref{img:dfd0}) dargestellt.
+Diese und ihre Beziehungen untereinander sind im Datenflussdiagramm DFD0 (Abbildung \ref{fig:dfd0}) dargestellt.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\linewidth]{img/dfd.png}
     \caption{DFD0}
-    \label{img:dfd0}
+    \label{fig:dfd0}
 \end{figure}
 
 \noindent Die Generierung der Referenzfrequenz $f_{ref}$ erfolgt über einen Taktteiler, der das Eingangssignal clk durch 1024 teilt.
@@ -68,9 +73,9 @@ Durch die Modulo-$2^{12}$-Operation des Zählers ergibt sich eine Phasenauflösu
 Die Frequenzauswahl erfolgt über ein 10-bit-Register (f\_sel), das an über die Schalter SW0 bis SW9 gesteuert werden kann.
 Die Ausgangsfrequenz berechnet sich nach folgender Formel:
 
-\begin{math}
+\begin{equation}
     f_{out} = f_{ref} \cdot \frac{f_\_sel}{2^{12}}
-\end{math}
+\end{equation}
 
 \noindent Dadurch sind Frequenzen im Bereich von 0 Hz bis 12,195 kHz mit einer Frequenzauflösung von 12 Hz einstellbar. 
 
@@ -83,11 +88,9 @@ Zum Beginn jedes Zyklus wird ein neuer Koeffizient geladen und der Zähler zurü
 Das Ausgangssignal wird für eine Anzahl von Ticks entsprechend des Koeffizienten auf '1' gesetzt, danach auf '0'.
 
 \noindent Zur Glättung des PWM-Signals wird ein passiver RC-Tiefpass mit Grenzfrequenz $f_g = 16 kHz$ verwendet.
-
-\begin{math}
+\begin{equation}
     f_g=\frac{1}{2 \cdot \pi \cdot R \cdot C}
-\end{math}
-
+\end{equation}
 Mit $R=xxx \Omega$ ergibt sich ein Kondensatorwert von $C=xxx F$
 
 \subsection{Testbenches und Use-Cases}

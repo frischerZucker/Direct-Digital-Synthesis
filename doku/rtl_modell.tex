@@ -1,0 +1,39 @@
+\section{Register-Transfer-Ebene}
+\label{sec:rt_ebene}
+Auf der Register-Transfer-Ebene wurde der DDS-Sinussignalgenerator in drei klar voneinander abgegrenzte Hardwaremodule unterteilt.
+Sie sind so angeordnet, das jedes eine klar abgegrenzte Aufgabe übernimmt und über Schnittstellen nach außen kommunizieren kann.
+Die einzelnen Module implementieren die in Abschnitt~\ref{subsec:lösungsansatz} erläuterten Komponenten.
+Diese modulare Struktur sorgt für ein übersichtlicheres Design und erleichtert mögliche Änderungen am Design.
+
+\subsection{Testbench}
+\label{subsec:tb_rt}
+Die Testbench auf Register-Transfer-Ebene erweitert die algorithmische Testbench.
+Es werden jeweils eine Instanz des Modells auf Register-Transfer-Ebene (Design Under Test) und des algorithmischen Modells (Golden Model) erzeugt.
+Dies ermöglicht einen einfachen Vergleich beider Modelle, da nur überprüft werden muss, ob beide Modelle die gleichen Ausgangssignale erzeugen.
+Dazu werden in einem eigenen Prozess einmal pro Taktzyklus die Ausgangssignale beider Modelle verglichen.
+Sind sie nicht gleich, wird eine Meldung ausgegeben und die Anzahl an Fehlerstellen um eins erhöht.
+Da das Register-Transfer-Modell eine Clock benötigt, existiert noch ein weiterer Prozess zur Generierung dieser. 
+
+\subsection{Funktionale Simulation}
+- Test sieht gut aus
+- Verläufe der Ausgangssignale sind quasi gleich
+-> siehe Ausgabe der Simulation
+- Ausgangssignal der RT-Ebene kommt halben Taktzyklus später (siehe Bild mit Signalverläufen)
+-> ist ja eigentlich kein Problem
+\label{subsec:sim_func_rt}
+\begin{verbatim}
+Note: Use-Case #1: maximale Frequenz
+Time: 0 ps  Iteration: 0  Instance: /dds_testbench
+Note: Use-Case #2: niedrigere Frequenz
+Time: 81920 ns  Iteration: 0  Instance: /dds_testbench
+Note: Use-Case #3: niedrigste Frequenz
+Time: 245760 ns  Iteration: 0  Instance: /dds_testbench
+Note: Anzahl Clockzyklen, in denen die Modelle nicht 
+      übereingestimmt haben: 0
+Time: 84131840 ns  Iteration: 0  Instance: /dds_testbench
+Failure: Alle Use-Cases abgeschlossen.
+Time: 84131840 ns  Iteration: 0  Process: /dds_testbench/...  
+\end{verbatim}
+
+\subsection{Timing Simulation}
+\label{subsec:sim_timing_rt}
